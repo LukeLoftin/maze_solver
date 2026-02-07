@@ -1,11 +1,12 @@
 from maze import Maze
 
 def main():
-    rows = 20
-    cols = 20
+    rows = 10
+    cols = 10
 
     maze = Maze(rows, cols)
     maze.buildEdges()
+    maze.setExits()
     maze.kruskal()
     maze.printMaze()
     maze.printWeightedMaze()

@@ -23,6 +23,24 @@ class Maze:
     def getId(self, row, col):
         return row * self.cols + col
 
+    # adds the start and finish. each will be on a random border location and they must be on different borders
+    def setExits(self):
+        borders = {
+            "upper": [(0,i) for i in range (self.cols)],
+            "lower": [(self.rows - 1, i) for i in range (self.cols)],
+            "left": [(i, 0) for i in range (self.rows)],
+            "right": [(i, self.cols - 1) for i in range (self.rows)],
+        }
+        # select different borders
+        borderOptions = ["upper", "lower", "left", "right"]
+        selection1 = random.choice(borderOptions)
+        borderOptions.remove(selection1)
+        selection2 = random.choice(borderOptions)
+
+        self.start = random.choice(borders[selection1])
+        self.finish = random.choice(borders[selection2])
+
+
     # build all available edges
     def buildEdges(self):
         self.edges = []
@@ -107,9 +125,14 @@ class Maze:
                 cell = self.grid[r][c]
 
                 # cell interior (3 spaces)
-                print("   ", end="")
+                if (r, c) == self.start:
+                    print(" S ", end="")
+                elif (r, c) == self.finish:
+                    print(" F ", end="")
+                else:
+                    print("   ", end="")
 
-                # east wall
+                    # east wall
                 if cell.walls['E']:
                     print("|", end="")
                 else:
@@ -144,7 +167,12 @@ class Maze:
                 cell = self.grid[r][c]
 
                 # cell interior (3 spaces)
-                print(f"{cell.cost:^3}", end="")
+                if (r, c) == self.start:
+                    print(" S ", end="")
+                elif (r, c) == self.finish:
+                    print(" F ", end="")
+                else:
+                    print(f"{cell.cost:^3}", end="")
 
                 # east wall
                 if cell.walls['E']:
