@@ -7,6 +7,10 @@ class Cell:
     def __init__(self, weights = None):
         self.walls = {'N' : True, 'S' : True, 'W' : True, 'E' : True}
         self.cost = 1
+        self.entrance = False
+        self.exit = False
+        self.traversed = False
+        self.solutionPath = False
 
         costList = [1, 3, 5, 8]  # costs for travelling to each node if a weighted maze is to be used
         # for debugging, remove later

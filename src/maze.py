@@ -31,6 +31,15 @@ class Maze:
             "left": [(i, 0) for i in range (self.rows)],
             "right": [(i, self.cols - 1) for i in range (self.rows)],
         }
+        # clear flags
+        for r in range(self.rows):
+            for c in range(self.cols):
+                cell = self.grid[r][c]
+                cell.entrance = False
+                cell.exit = False
+                cell.traversed = False
+                cell.solutionPath = False
+
         # select different borders
         borderOptions = ["upper", "lower", "left", "right"]
         selection1 = random.choice(borderOptions)
@@ -39,6 +48,13 @@ class Maze:
 
         self.start = random.choice(borders[selection1])
         self.finish = random.choice(borders[selection2])
+
+        sr, sc = self.start
+        fr, fc = self.finish
+
+        # mark the cells
+        self.grid[sr][sc].entrance = True
+        self.grid[fr][fc].exit = True
 
 
     # build all available edges
@@ -109,86 +125,40 @@ class Maze:
                 self.destroyWall(cell1, cell2, direction)
 
     def printMaze(self):
-        rows = self.rows
-        cols = self.cols
+        rows, cols = self.rows, self.cols
 
-        # print top border
+        # top border
         print("+", end="")
-        for c in range(cols):
+        for _ in range(cols):
             print("---+", end="")
         print()
 
         for r in range(rows):
-            # print left wall and cell interior
             print("|", end="")
             for c in range(cols):
                 cell = self.grid[r][c]
 
-                # cell interior (3 spaces)
-                if (r, c) == self.start:
-                    print(" S ", end="")
-                elif (r, c) == self.finish:
-                    print(" F ", end="")
+                # cell interior (priority matters)
+                if cell.entrance:
+                    inside = " S "
+                elif cell.exit:
+                    inside = " F "
+                elif cell.solutionPath:
+                    inside = " X "
+                elif cell.traversed:
+                    inside = " O "
                 else:
-                    print("   ", end="")
+                    inside = "   "
 
-                    # east wall
-                if cell.walls['E']:
-                    print("|", end="")
-                else:
-                    print(" ", end="")
+                print(inside, end="")
+                print("|" if cell.walls['E'] else " ", end="")
             print()
 
-            # print bottom walls
+            # bottom walls
             print("+", end="")
             for c in range(cols):
                 cell = self.grid[r][c]
-                if cell.walls['S']:
-                    print("---+", end="")
-                else:
-                    print("   +", end="")
-            print()
-
-
-    def printWeightedMaze(self):
-        rows = self.rows
-        cols = self.cols
-
-        # print top border
-        print("+", end="")
-        for c in range(cols):
-            print("---+", end="")
-        print()
-
-        for r in range(rows):
-            # print left wall and cell interior
-            print("|", end="")
-            for c in range(cols):
-                cell = self.grid[r][c]
-
-                # cell interior (3 spaces)
-                if (r, c) == self.start:
-                    print(" S ", end="")
-                elif (r, c) == self.finish:
-                    print(" F ", end="")
-                else:
-                    print(f"{cell.cost:^3}", end="")
-
-                # east wall
-                if cell.walls['E']:
-                    print("|", end="")
-                else:
-                    print(" ", end="")
-            print()
-
-            # print bottom walls
-            print("+", end="")
-            for c in range(cols):
-                cell = self.grid[r][c]
-                if cell.walls['S']:
-                    print("---+", end="")
-                else:
-                    print("   +", end="")
+                print("---+" if cell.walls['S'] else "   +", end="")
             print()
 
 
