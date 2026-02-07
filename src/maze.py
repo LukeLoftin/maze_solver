@@ -11,17 +11,13 @@ class Maze:
         for i in range(rows):
             self.grid[i] = [None] * cols
             for j in range(cols):
-                self.grid[i][j] = Cell(0)
+                self.grid[i][j] = Cell()
+
 
         # parent will be used to keep track of what set a node belongs to and rank tracks the size of the tree
         self.parent = [i for i in range(rows * cols)]
         self.rank = [0] * (rows * cols)
 
-    def completeMaze(cls, rows, cols):
-        maze = cls(rows, cols)
-        maze.buildEdges()
-        maze.kruskal()
-        return maze
 
     # getter for cell id
     def getId(self, row, col):
@@ -112,6 +108,43 @@ class Maze:
 
                 # cell interior (3 spaces)
                 print("   ", end="")
+
+                # east wall
+                if cell.walls['E']:
+                    print("|", end="")
+                else:
+                    print(" ", end="")
+            print()
+
+            # print bottom walls
+            print("+", end="")
+            for c in range(cols):
+                cell = self.grid[r][c]
+                if cell.walls['S']:
+                    print("---+", end="")
+                else:
+                    print("   +", end="")
+            print()
+
+
+    def printWeightedMaze(self):
+        rows = self.rows
+        cols = self.cols
+
+        # print top border
+        print("+", end="")
+        for c in range(cols):
+            print("---+", end="")
+        print()
+
+        for r in range(rows):
+            # print left wall and cell interior
+            print("|", end="")
+            for c in range(cols):
+                cell = self.grid[r][c]
+
+                # cell interior (3 spaces)
+                print(f"{cell.cost:^3}", end="")
 
                 # east wall
                 if cell.walls['E']:

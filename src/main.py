@@ -8,5 +8,6 @@ def main():
     maze.buildEdges()
     maze.kruskal()
     maze.printMaze()
+    maze.printWeightedMaze()
 
 main()
